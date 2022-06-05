@@ -2,43 +2,115 @@ const request = require("supertest");
 const app = require("../app");
 const Customer = require("../models/account");
 
-describe("test create route", () => {
-  const todo = {
-    accountNumber: "123456",
-    amount: 12,
-    phoneNumber: "080234",
-  };
-  const todo2 = [
+describe("test transfer route", () => {
+  let transfer = [
     {
       accountNumber: "123456",
       amount: 12,
     },
   ];
 
-  test("Should have key record and msg when created", async () => {
-    const mockCreateTodo = jest.fn(() => todo);
+  test("Should have validation error when account number field is missing ", async () => {
+    transfer = [
+      {
+        amount: 12,
+      },
+    ];
+    const mockCreate = jest.fn(() => transfer);
+    jest.spyOn(Customer, "update").mockImplementation(() => mockCreate());
+
+    const res = await request(app).post("/api").send(transfer);
+
+    //expect(mockCreateTodo).toHaveBeenCalledTimes(1);
+    expect(res.body).toHaveProperty("location");
+    expect(res.body).toHaveProperty("msg");
+    expect(res.body).toHaveProperty("param");
+  });
+
+  test("Should have validation error when amount field is missing ", async () => {
+    transfer = [
+      {
+        accountNumber: "123456",
+      },
+    ];
+    const mockCreate = jest.fn(() => transfer);
+    jest.spyOn(Customer, "update").mockImplementation(() => mockCreate());
+
+    const res = await request(app).post("/api").send(transfer);
+
+    //expect(mockCreateTodo).toHaveBeenCalledTimes(1);
+    expect(res.body).toHaveProperty("location");
+    expect(res.body).toHaveProperty("msg");
+    expect(res.body).toHaveProperty("param");
+  });
+
+  test("Should not update account when failed validation ", async () => {
+    transfer = [
+      {
+        accountNumber: "123456",
+      },
+    ];
+    const mockCreate = jest.fn(() => transfer);
+    jest.spyOn(Customer, "update").mockImplementation(() => mockCreate());
+
+    const res = await request(app).post("/api").send(transfer);
+
+    expect(mockCreate).toHaveBeenCalledTimes(0);
+  });
+});
+
+describe("test create route", () => {
+  let create = {
+    accountNumber: "123456",
+    amount: 12,
+    phoneNumber: "080234",
+  };
+  const transfer = [
+    {
+      accountNumber: "123456",
+      amount: 12,
+    },
+  ];
+
+  test("Should have key amount, phoneNumber and accountNumber when created", async () => {
+    const mockCreateTodo = jest.fn(() => create);
     jest.spyOn(Customer, "create").mockImplementation(() => mockCreateTodo());
 
-    const res = await request(app).post("/api").send(todo).expect(200);
+    const res = await request(app).post("/api").send(create).expect(200);
 
     expect(mockCreateTodo).toHaveBeenCalledTimes(1);
     expect(res.body).toHaveProperty("amount");
     expect(res.body).toHaveProperty("phoneNumber");
+    expect(res.body).toHaveProperty("accountNumber");
   });
 
-  // test("Should have key record and msg when created", async () => {
-  //   await request(app).post("/api").send(todo);
-  //   const mockCreateTodo = jest.fn(() => todo);
+  test("Should have validation error when account number field is missing ", async () => {
+    create = {
+      amount: 12,
+      phoneNumber: "080234",
+    };
+    const mockCreate = jest.fn(() => create);
+    jest.spyOn(Customer, "create").mockImplementation(() => mockCreate());
 
-  //   jest.spyOn(Customer, "findOne").mockImplementation(() => mockCreateTodo());
+    const res = await request(app).post("/api").send(create);
 
-  //   const res = await request(app)
-  //     .patch("/api/transfer")
-  //     .send(todo2)
-  //     .expect(200);
+    expect(res.body).toHaveProperty("location");
+    expect(res.body).toHaveProperty("msg");
+    expect(res.body).toHaveProperty("param");
+  });
 
-  // expect(mockCreateTodo).toHaveBeenCalledTimes(1);
-  // expect(res.body).toHaveProperty("amount");
-  // expect(res.body).toHaveProperty("phoneNumber");
-  //});
+  test("Should have validation error when amount field is missing ", async () => {
+    create = {
+      accountNumber: "123456",
+      phoneNumber: "080234",
+    };
+    const mockCreate = jest.fn(() => create);
+    jest.spyOn(Customer, "create").mockImplementation(() => mockCreate());
+
+    const res = await request(app).post("/api").send(create);
+
+    expect(res.body).toHaveProperty("location");
+    expect(res.body).toHaveProperty("msg");
+    expect(res.body).toHaveProperty("param");
+  });
 });

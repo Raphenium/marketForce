@@ -1,6 +1,6 @@
 const request = require("supertest");
 const app = require("../app");
-const Customer = require("../models/account");
+const Account = require("../models/account");
 
 describe("test transfer route", () => {
   let transfer = [
@@ -16,12 +16,11 @@ describe("test transfer route", () => {
         amount: 12,
       },
     ];
-    const mockCreate = jest.fn(() => transfer);
-    jest.spyOn(Customer, "update").mockImplementation(() => mockCreate());
+    const mockTransfer = jest.fn(() => transfer);
+    jest.spyOn(Account, "update").mockImplementation(() => mockTransfer());
 
     const res = await request(app).post("/api").send(transfer);
 
-    //expect(mockCreateTodo).toHaveBeenCalledTimes(1);
     expect(res.body).toHaveProperty("location");
     expect(res.body).toHaveProperty("msg");
     expect(res.body).toHaveProperty("param");
@@ -33,12 +32,11 @@ describe("test transfer route", () => {
         accountNumber: "123456",
       },
     ];
-    const mockCreate = jest.fn(() => transfer);
-    jest.spyOn(Customer, "update").mockImplementation(() => mockCreate());
+    const mockTransfer = jest.fn(() => transfer);
+    jest.spyOn(Account, "update").mockImplementation(() => mockTransfer());
 
     const res = await request(app).post("/api").send(transfer);
 
-    //expect(mockCreateTodo).toHaveBeenCalledTimes(1);
     expect(res.body).toHaveProperty("location");
     expect(res.body).toHaveProperty("msg");
     expect(res.body).toHaveProperty("param");
@@ -50,12 +48,12 @@ describe("test transfer route", () => {
         accountNumber: "123456",
       },
     ];
-    const mockCreate = jest.fn(() => transfer);
-    jest.spyOn(Customer, "update").mockImplementation(() => mockCreate());
+    const mockTransfer = jest.fn(() => transfer);
+    jest.spyOn(Account, "update").mockImplementation(() => mockTransfer());
 
     const res = await request(app).post("/api").send(transfer);
 
-    expect(mockCreate).toHaveBeenCalledTimes(0);
+    expect(mockTransfer).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -74,7 +72,7 @@ describe("test create route", () => {
 
   test("Should have key amount, phoneNumber and accountNumber when created", async () => {
     const mockCreateTodo = jest.fn(() => create);
-    jest.spyOn(Customer, "create").mockImplementation(() => mockCreateTodo());
+    jest.spyOn(Account, "create").mockImplementation(() => mockCreateTodo());
 
     const res = await request(app).post("/api").send(create).expect(200);
 
@@ -90,7 +88,7 @@ describe("test create route", () => {
       phoneNumber: "080234",
     };
     const mockCreate = jest.fn(() => create);
-    jest.spyOn(Customer, "create").mockImplementation(() => mockCreate());
+    jest.spyOn(Account, "create").mockImplementation(() => mockCreate());
 
     const res = await request(app).post("/api").send(create);
 
@@ -105,7 +103,7 @@ describe("test create route", () => {
       phoneNumber: "080234",
     };
     const mockCreate = jest.fn(() => create);
-    jest.spyOn(Customer, "create").mockImplementation(() => mockCreate());
+    jest.spyOn(Account, "create").mockImplementation(() => mockCreate());
 
     const res = await request(app).post("/api").send(create);
 

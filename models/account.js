@@ -11,6 +11,7 @@ const Account = sequelize.define("account", {
   accountNumber: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   amount: {
     type: Sequelize.FLOAT,
